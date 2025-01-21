@@ -118,7 +118,7 @@ export default function AssignmentEditor() {
         </tbody>
       </table>
       <hr />
-      <div align="right">
+      <div>
         <button>Cancel</button>
         <button>Save</button>
       </div>
