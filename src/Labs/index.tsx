@@ -7,17 +7,11 @@ import Lab3 from "./Lab3";
 export default function Labs() {
   return (
     <div>
-      <h2>Lien Nguyen - CS4550 Section 02</h2>
-      <a
-        href="https://github.com/lieenn/kambaz-react-web-app/tree/a1"
-        id="wd-github"
-      >
-        GitHub Repository
-      </a>
+      <h2>Lien Nguyen</h2>
       <h1>Labs</h1>
       <TOC />
       <Routes>
-        <Route path="/" element={<Navigate to="Lab1" />} />
+        <Route path="/" element={<Navigate to="" />} />
         <Route path="Lab1" element={<Lab1 />} />
         <Route path="Lab2/*" element={<Lab2 />} />
         <Route path="Lab3" element={<Lab3 />} />

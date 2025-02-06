@@ -5,8 +5,7 @@ import Signup from "./Signup";
 
 export default function Account() {
   return (
-    <div id="wd-account-screen">
-      <h2>Account</h2>
+    <div id="wd-account-screen" className="container mt-5">
       <Routes>
         <Route path="/" element={<Navigate to="/Kambaz/Account/Signin" />} />
         <Route path="/Signin" element={<Signin />} />
