@@ -1,4 +1,3 @@
-import React from "react";
 import { FaPlus } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 
