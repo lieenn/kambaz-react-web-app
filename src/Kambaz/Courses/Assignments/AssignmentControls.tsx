@@ -26,16 +26,14 @@ export default function AssignmentControls() {
           className="btn btn-lg btn-secondary me-1 d-flex align-items-center"
         >
           <FaPlus className="me-2" />
-          <h4 className="m-0">Group</h4>
+          <h6 className="m-0">Group</h6>
         </button>
-
         <button
           id="wd-add-assignment-btn"
-          className="btn btn-lg btn-danger d-flex align-items-center"
+          className="btn btn-lg btn-danger d-flex align-items-center justify-content-center"
         >
           <FaPlus className="me-2" />
-          <span className="d-none d-sm-block">Assignment</span>
-          {/* Hide on small screens */}
+          <h6 className="d-none d-sm-block m-0">Assignment</h6>
         </button>
       </div>
     </div>

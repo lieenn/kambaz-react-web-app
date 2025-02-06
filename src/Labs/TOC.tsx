@@ -23,7 +23,7 @@ export default function TOC() {
           href="https://github.com/lieenn/kambaz-react-web-app"
           id="wd-github"
         >
-          My GitHub
+          Lien's GitHub
         </Nav.Link>
       </Nav.Item>
     </Nav>

@@ -11,8 +11,6 @@ export default function Assignments() {
       <AssignmentControls />
       <br />
       <br />
-      <br />
-      <br />
       <ul id="wd-assignment" className="list-group rounded-0">
         <li className="wd-module list-group-item p-0 mb-5 fs-5">
           <div className="wd-title p-3 ps-2 bg-secondary">
@@ -41,9 +39,9 @@ export default function Assignments() {
                   >
                     <b> A1</b> <br />
                     <h6>
-                      <span className="wd-fg-color-red">Multiple Modules</span>|{" "}
-                      <b> Not available until</b> May 6 at 12:00am | Due May 13
-                      at 11:59pm | 100 pts
+                      <span className="wd-fg-color-red">Multiple Modules </span>
+                      | <b> Not available until</b> May 13 at 12:00am | Due May
+                      13 at 11:59pm | 100 pts
                     </h6>
                   </a>
                 </div>
@@ -73,11 +71,8 @@ export default function Assignments() {
                   >
                     <b> A2</b> <br />
                     <h6>
-                      <span className="wd-fg-color-red">
-                        {" "}
-                        Multiple Modules{" "}
-                      </span>{" "}
-                      | <b> Not available until</b> May 13 at 12:00am | Due May
+                      <span className="wd-fg-color-red">Multiple Modules </span>
+                      | <b> Not available until</b> May 20 at 12:00am | Due May
                       20 at 11:59pm | 100 pts
                     </h6>
                   </a>
@@ -108,9 +103,9 @@ export default function Assignments() {
                   >
                     <b> A3</b> <br />
                     <h6>
-                      <span className="wd-fg-color-red">Multiple Modules</span>|{" "}
-                      <b> Not available until</b> May 20 at 12:00am | Due May 27
-                      at 11:59pm | 100 pts
+                      <span className="wd-fg-color-red">Multiple Modules </span>
+                      | <b> Not available until</b> May 27 at 12:00am | Due May
+                      27 at 11:59pm | 100 pts
                     </h6>
                   </a>
                 </div>
