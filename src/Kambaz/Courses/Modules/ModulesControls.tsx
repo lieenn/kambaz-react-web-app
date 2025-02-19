@@ -1,82 +1,34 @@
 import { FaPlus } from "react-icons/fa6";
 import GreenCheckmark from "./GreenCheckmark";
-import { RiProhibitedLine } from "react-icons/ri";
-
+import { Button, Dropdown } from "react-bootstrap";
 export default function ModulesControls() {
   return (
-    <div id="wd-modules-controls" className="text-nowrap d-flex">
-      <button
-        id="wd-collapse-all"
-        className="btn btn-lg btn-secondary me-1 float-end"
-      >
-        Collapse All
-      </button>
-      <button
-        id="wd-view-progress"
-        className="btn btn-lg btn-secondary me-1 float-end"
-      >
-        View Progress
-      </button>
-      <div className="dropdown d-inline me-1 float-end">
-        <button
-          id="wd-publish-all-btn"
-          className="btn btn-lg btn-secondary dropdown-toggle"
-          type="button"
-          data-bs-toggle="dropdown"
-        >
+    <div id="wd-modules-controls" className="text-nowrap">
+      <Button variant="danger" size="lg" className="me-1 float-end">
+        <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
+        Module{" "}
+      </Button>
+      <Dropdown className="float-end me-2">
+        <Dropdown.Toggle variant="secondary" size="lg">
           <GreenCheckmark />
           Publish All
-        </button>
-        <ul className="dropdown-menu">
-          <li>
-            <button
-              id="wd-publish-all-modules-and-items-btn"
-              className="dropdown-item"
-              type="button"
-            >
-              <GreenCheckmark />
-              Publish all modules and items
-            </button>
-          </li>
-          <li>
-            <button
-              id="wd-publish-modules-only-button"
-              className="dropdown-item"
-              type="button"
-            >
-              <GreenCheckmark />
-              Publish modules only
-            </button>
-          </li>
-          <li>
-            <button
-              id="wd-unpublish-all-modules-and-items"
-              className="dropdown-item"
-              type="button"
-            >
-              <RiProhibitedLine />
-              Unpublish all modules and items
-            </button>
-          </li>
-          <li>
-            <button
-              id="wd-unpublish-modules-only"
-              className="dropdown-item"
-              type="button"
-            >
-              <RiProhibitedLine />
-              Unpublish modules only
-            </button>
-          </li>
-        </ul>
-      </div>
-      <button
-        id="wd-add-module-btn"
-        className="btn btn-lg btn-danger me-1 float-end"
-      >
-        <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
-        Module
-      </button>
+        </Dropdown.Toggle>
+
+        <Dropdown.Menu>
+          <Dropdown.Item>
+            <GreenCheckmark />
+            Publish All
+          </Dropdown.Item>
+          <Dropdown.Item>
+            <GreenCheckmark />
+            Publish all modules
+          </Dropdown.Item>
+          <Dropdown.Item>
+            <GreenCheckmark />
+            Publish modules only
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
     </div>
   );
 }

@@ -1,4 +1,11 @@
+import { Link, useParams } from "react-router";
+import db from "../../Database";
+
 export default function AssignmentEditor() {
+  const { cid, aid } = useParams();
+  const assignment = db.assignments.find(
+    (assignment) => assignment._id === aid
+  );
   return (
     <div id="wd-edit-assignment">
       <div className="mb-3">
@@ -9,14 +16,18 @@ export default function AssignmentEditor() {
           type="email"
           className="form-control"
           id="text"
-          placeholder="A1"
+          value={assignment?.title}
         />
       </div>
 
-      <div className="list-group">
+      <div className="list-group wd-description">
         <div className="list-group-item">
           The assignment is{" "}
           <span className="wd-fg-color-red"> available online </span> <br />
+          <textarea
+            value={assignment?.description}
+            className="form-control"
+          ></textarea>
           <br />
           Submit a link to the landing page of your Web application running on
           Netlify. <br />
@@ -49,7 +60,7 @@ export default function AssignmentEditor() {
                 type="text"
                 className="form-control"
                 id="inputPoints"
-                placeholder="100"
+                value="100"
               />
             </td>
           </tr>
@@ -186,6 +197,7 @@ export default function AssignmentEditor() {
                       type="date"
                       className="form-control"
                       id="inputAssignDate"
+                      value={assignment?.due.split("T")[0]}
                     />
                   </div>
 
@@ -202,6 +214,7 @@ export default function AssignmentEditor() {
                         type="date"
                         className="form-control"
                         id="inputAssignAvailable"
+                        value={assignment?.available.split("T")[0]}
                       />
                     </div>
                     <div className="col">
@@ -212,6 +225,7 @@ export default function AssignmentEditor() {
                         type="date"
                         className="form-control"
                         id="inputAssignUntil"
+                        value={assignment?.due.split("T")[0]}
                       />
                     </div>
                   </div>
@@ -222,8 +236,18 @@ export default function AssignmentEditor() {
         </table>
       </form>
       <div className="float-end">
-        <button className="btn btn-light me-2">Cancel</button>
-        <button className="btn btn-danger">Save</button>
+        <Link
+          to={`/Kambaz/Courses/${cid}/Assignments`}
+          className="btn btn-light me-2"
+        >
+          Cancel
+        </Link>
+        <Link
+          to={`/Kambaz/Courses/${cid}/Assignments`}
+          className="btn btn-danger"
+        >
+          Save
+        </Link>
       </div>
     </div>
   );
