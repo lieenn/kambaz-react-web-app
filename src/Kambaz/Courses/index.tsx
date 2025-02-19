@@ -1,5 +1,5 @@
 import CourseNavigation from "./Navigation";
-import { Route, Routes } from "react-router";
+import { Route, Routes, useLocation, useParams } from "react-router";
 import Modules from "./Modules";
 import Home from "./Home";
 import Assignments from "./Assignments";
@@ -9,13 +9,17 @@ import PeopleTable from "./People/Table";
 import Piazza from "./Piazza";
 import Zoom from "./Zoom";
 import Quizzes from "./Quizzes";
+import db from "../Database";
 
 export default function Courses() {
+  const { cid } = useParams();
+  const { pathname } = useLocation();
+  const course = db.courses.find((course) => course._id === cid);
   return (
     <div id="wd-courses">
       <h2 className="text-danger">
         <FaAlignJustify className="me-4 fs-4 mb-1" />
-        Course 1234
+        {course?.name} &gt; {pathname.split("/").pop()}
       </h2>
       <hr />
       <div className="d-flex">
