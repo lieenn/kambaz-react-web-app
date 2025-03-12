@@ -1,21 +1,43 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import AssignmentStatus from "./AssignmentStatus";
 import AssignmentControls from "./AssignmentControls";
 import { PiNotePencil } from "react-icons/pi";
 import { BsGripVertical } from "react-icons/bs";
 import { GoTriangleDown } from "react-icons/go";
-import LessonControlButtons from "../Modules/LessonControlButtons";
-import db from "../../Database";
 import { ListGroup } from "react-bootstrap";
 import { Link, useParams } from "react-router";
+import AssignmentControlButtons from "./AssignmentControlButtons";
+import { useDispatch, useSelector } from "react-redux";
+import { addAssignment, deleteAssignment } from "./reducer";
 
 export default function Assignments() {
   const { cid } = useParams();
-  const assignments = db.assignments.filter(
-    (assignment) => assignment.course === cid
+  const dispatch = useDispatch();
+  // const assignments = db.assignments.filter(
+  //   (assignment) => assignment.course === cid
+  // );
+  const assignments = useSelector((state: any) =>
+    state.assignmentReducer.assignments.filter(
+      (assignment: any) => assignment.course === cid
+    )
   );
+
+  const handleAddAssignment = () => {
+    const newId = "R" + Math.floor(Math.random() * 900 + 100).toString();
+
+    const newAssignment = {
+      title: "New Assignment",
+      course: newId,
+      description: "Assignment description",
+      available: new Date().toISOString(),
+      due: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 1 week from now
+    };
+    dispatch(addAssignment(newAssignment));
+  };
+
   return (
     <div id="wd-assignments">
-      <AssignmentControls />
+      <AssignmentControls addAssignment={handleAddAssignment} />
       <br />
       <br />
       <ListGroup className="list-group rounded-0" id="wd-assignment">
@@ -27,7 +49,7 @@ export default function Assignments() {
             <AssignmentStatus />
           </div>
           <ListGroup className="wd-assignments list-group rounded-0">
-            {assignments.map((assignment) => (
+            {assignments.map((assignment: any) => (
               <ListGroup.Item
                 className="wd-lesson wd-assignment list-group-item p-3 ps-1 border-left-green"
                 as={Link}
@@ -60,7 +82,12 @@ export default function Assignments() {
                     </h6>
                   </div>
                   <div className="col-auto">
-                    <LessonControlButtons />
+                    <AssignmentControlButtons
+                      assignmentId={assignment._id}
+                      deleteAssignment={() =>
+                        dispatch(deleteAssignment(assignment._id))
+                      }
+                    />
                   </div>
                 </div>
               </ListGroup.Item>

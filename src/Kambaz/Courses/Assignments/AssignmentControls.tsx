@@ -1,7 +1,11 @@
 import { FaPlus } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 
-export default function AssignmentControls() {
+export default function AssignmentControls({
+  addAssignment,
+}: {
+  addAssignment: () => void;
+}) {
   return (
     <div
       id="wd-assignment-controls"
@@ -30,6 +34,7 @@ export default function AssignmentControls() {
         <button
           id="wd-add-assignment-btn"
           className="btn btn-lg btn-danger d-flex align-items-center justify-content-center"
+          onClick={addAssignment}
         >
           <FaPlus className="me-2" />
           <h6 className="d-none d-sm-block m-0">Assignment</h6>
