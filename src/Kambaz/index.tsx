@@ -46,8 +46,7 @@ export default function Kambaz() {
   };
 
   const deleteCourse = async (courseId: string) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const status = await courseClient.deleteCourse(courseId);
+    await courseClient.deleteCourse(courseId);
     setCourses(courses.filter((course) => course._id !== courseId));
   };
 
