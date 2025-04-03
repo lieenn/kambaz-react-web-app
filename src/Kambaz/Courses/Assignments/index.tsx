@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from "react";
 import AssignmentStatus from "./AssignmentStatus";
 import AssignmentControls from "./AssignmentControls";
 import { PiNotePencil } from "react-icons/pi";
@@ -7,32 +8,51 @@ import { GoTriangleDown } from "react-icons/go";
 import { ListGroup } from "react-bootstrap";
 import { Link, useParams } from "react-router";
 import AssignmentControlButtons from "./AssignmentControlButtons";
-import { useDispatch, useSelector } from "react-redux";
-import { addAssignment, deleteAssignment } from "./reducer";
+import * as client from "./client";
 
 export default function Assignments() {
-  const { cid } = useParams();
-  const dispatch = useDispatch();
-  // const assignments = db.assignments.filter(
-  //   (assignment) => assignment.course === cid
-  // );
-  const assignments = useSelector((state: any) =>
-    state.assignmentReducer.assignments.filter(
-      (assignment: any) => assignment.course === cid
-    )
-  );
+  const { cid } = useParams<{ cid: string }>();
+  const [assignments, setAssignments] = useState<any[]>([]);
 
-  const handleAddAssignment = () => {
-    const newId = "R" + Math.floor(Math.random() * 900 + 100).toString();
+  const fetchAssignments = async () => {
+    if (!cid) return;
+    try {
+      const results = await client.findAssignmentsByCourse(cid);
+      setAssignments(results);
+    } catch (error) {
+      console.error("Error fetching assignments:", error);
+    }
+  };
 
-    const newAssignment = {
-      title: "New Assignment",
-      course: newId,
-      description: "Assignment description",
-      available: new Date().toISOString(),
-      due: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 1 week from now
-    };
-    dispatch(addAssignment(newAssignment));
+  useEffect(() => {
+    fetchAssignments();
+  }, [cid]);
+
+  const handleAddAssignment = async () => {
+    if (!cid) return;
+    try {
+      const newAssignment = {
+        title: "New Assignment",
+        description: "Assignment description",
+        available: new Date().toISOString(),
+        due: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 1 week from now
+      };
+
+      await client.createAssignment(cid, newAssignment);
+      fetchAssignments(); // Refresh the assignments list
+    } catch (error) {
+      console.error("Error creating assignment:", error);
+    }
+  };
+
+  const handleDeleteAssignment = async (id: string) => {
+    if (!cid) return;
+    try {
+      await client.deleteAssignment(cid, id);
+      fetchAssignments(); // Refresh the assignments list
+    } catch (error) {
+      console.error("Error deleting assignment:", error);
+    }
   };
 
   return (
@@ -51,6 +71,7 @@ export default function Assignments() {
           <ListGroup className="wd-assignments list-group rounded-0">
             {assignments.map((assignment: any) => (
               <ListGroup.Item
+                key={assignment._id}
                 className="wd-lesson wd-assignment list-group-item p-3 ps-1 border-left-green"
                 as={Link}
                 to={`/Kambaz/Courses/${cid}/Assignments/${assignment._id}`}
@@ -85,7 +106,7 @@ export default function Assignments() {
                     <AssignmentControlButtons
                       assignmentId={assignment._id}
                       deleteAssignment={() =>
-                        dispatch(deleteAssignment(assignment._id))
+                        handleDeleteAssignment(assignment._id)
                       }
                     />
                   </div>

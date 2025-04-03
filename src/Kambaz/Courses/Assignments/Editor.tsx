@@ -1,17 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Link, useParams } from "react-router";
-import db from "../../Database";
-import { useDispatch } from "react-redux";
-import { updateAssignment } from "./reducer";
 import { useState, useEffect } from "react";
+import * as client from "./client";
 
 export default function AssignmentEditor() {
-  const { cid, aid } = useParams();
-  const dispatch = useDispatch();
-
-  const assignment = db.assignments.find(
-    (assignment) => assignment._id === aid
-  );
+  const { cid, aid } = useParams<{ cid: string; aid: string }>();
 
   // Add state for form values
   const [formValues, setFormValues] = useState({
@@ -23,37 +16,46 @@ export default function AssignmentEditor() {
     inputDueTime: "23:59",
   });
 
-  // Initialize form values from assignment when component mounts or assignment changes
+  // Fetch assignment data
   useEffect(() => {
-    if (assignment) {
-      const availableDate = new Date(assignment.available || "");
-      const dueDate = new Date(assignment.due || "");
+    const fetchAssignment = async () => {
+      if (!cid || !aid) return;
+      try {
+        const assignment = await client.findAssignmentById(cid, aid);
+        if (assignment) {
+          const availableDate = new Date(assignment.available || "");
+          const dueDate = new Date(assignment.due || "");
 
-      setFormValues({
-        title: assignment.title || "",
-        description: assignment.description || "",
-        inputAvailable: assignment.available
-          ? availableDate.toISOString().split("T")[0]
-          : "",
-        inputAvailableTime: assignment.available
-          ? `${availableDate
-              .getHours()
-              .toString()
-              .padStart(2, "0")}:${availableDate
-              .getMinutes()
-              .toString()
-              .padStart(2, "0")}`
-          : "00:00",
-        inputDue: assignment.due ? dueDate.toISOString().split("T")[0] : "",
-        inputDueTime: assignment.due
-          ? `${dueDate.getHours().toString().padStart(2, "0")}:${dueDate
-              .getMinutes()
-              .toString()
-              .padStart(2, "0")}`
-          : "23:59",
-      });
-    }
-  }, [assignment]);
+          setFormValues({
+            title: assignment.title || "",
+            description: assignment.description || "",
+            inputAvailable: assignment.available
+              ? availableDate.toISOString().split("T")[0]
+              : "",
+            inputAvailableTime: assignment.available
+              ? `${availableDate
+                  .getHours()
+                  .toString()
+                  .padStart(2, "0")}:${availableDate
+                  .getMinutes()
+                  .toString()
+                  .padStart(2, "0")}`
+              : "00:00",
+            inputDue: assignment.due ? dueDate.toISOString().split("T")[0] : "",
+            inputDueTime: assignment.due
+              ? `${dueDate.getHours().toString().padStart(2, "0")}:${dueDate
+                  .getMinutes()
+                  .toString()
+                  .padStart(2, "0")}`
+              : "23:59",
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching assignment:", error);
+      }
+    };
+    fetchAssignment();
+  }, [cid, aid]);
 
   // Add change handlers
   const handleChange = (e: any) => {
@@ -61,7 +63,9 @@ export default function AssignmentEditor() {
   };
 
   // Add save handlers
-  const handleSave = () => {
+  const handleSave = async () => {
+    if (!cid || !aid) return;
+
     // Create date objects in local timezone
     const availableDate = new Date(
       `${formValues.inputAvailable}T${formValues.inputAvailableTime}`
@@ -71,13 +75,19 @@ export default function AssignmentEditor() {
     );
 
     const updatedAssignment = {
-      ...assignment,
+      _id: aid,
+      course: cid,
       title: formValues.title,
       description: formValues.description,
       available: availableDate.toISOString(), // This converts to UTC
       due: dueDate.toISOString(), // This converts to UTC
     };
-    dispatch(updateAssignment(updatedAssignment));
+
+    try {
+      await client.updateAssignment(cid, aid, updatedAssignment);
+    } catch (error) {
+      console.error("Error updating assignment:", error);
+    }
   };
 
   return (

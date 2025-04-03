@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import * as client from "./client";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -13,13 +14,27 @@ export default function Profile() {
     if (!currentUser) return navigate("/Kambaz/Account/Signin");
     setProfile(currentUser);
   };
-  const signout = () => {
+
+  // const signout = () => {
+  //   dispatch(setCurrentUser(null));
+  //   navigate("/Kambaz/Account/Signin");
+  // };
+
+  const signout = async () => {
+    await client.signout();
     dispatch(setCurrentUser(null));
     navigate("/Kambaz/Account/Signin");
   };
+
   useEffect(() => {
     fetchProfile();
   }, []);
+
+  const updateProfile = async () => {
+    const updatedProfile = await client.updateUser(profile);
+    dispatch(setCurrentUser(updatedProfile));
+  };
+
   return (
     <div className="wd-profile-screen">
       <h3>Profile</h3>
@@ -80,6 +95,14 @@ export default function Profile() {
             <option value="FACULTY">Faculty</option>{" "}
             <option value="STUDENT">Student</option>
           </select>
+          <Button
+            onClick={updateProfile}
+            className="btn btn-primary w-100 mb-2"
+          >
+            {" "}
+            Update{" "}
+          </Button>
+
           <Button onClick={signout} className="w-100 mb-2" id="wd-signout-btn">
             Sign out
           </Button>

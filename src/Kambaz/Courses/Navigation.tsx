@@ -19,6 +19,7 @@ export default function CourseNavigation() {
     >
       {links.map((link) => (
         <ListGroup.Item
+          key={link} // Add unique key prop
           active={pathname.includes(link)}
           className="list-group-item text-danger border border-0"
           as={Link}
