@@ -1,22 +1,107 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Link, useParams } from "react-router";
-import db from "../../Database";
+import { useState, useEffect } from "react";
+import * as client from "./client";
 
 export default function AssignmentEditor() {
-  const { cid, aid } = useParams();
-  const assignment = db.assignments.find(
-    (assignment) => assignment._id === aid
-  );
+  const { cid, aid } = useParams<{ cid: string; aid: string }>();
+
+  // Add state for form values
+  const [formValues, setFormValues] = useState({
+    title: "",
+    description: "",
+    inputAvailable: "",
+    inputAvailableTime: "00:00",
+    inputDue: "",
+    inputDueTime: "23:59",
+  });
+
+  // Fetch assignment data
+  useEffect(() => {
+    const fetchAssignment = async () => {
+      if (!cid || !aid) return;
+      try {
+        const assignment = await client.findAssignmentById(cid, aid);
+        if (assignment) {
+          const availableDate = new Date(assignment.available || "");
+          const dueDate = new Date(assignment.due || "");
+
+          setFormValues({
+            title: assignment.title || "",
+            description: assignment.description || "",
+            inputAvailable: assignment.available
+              ? availableDate.toISOString().split("T")[0]
+              : "",
+            inputAvailableTime: assignment.available
+              ? `${availableDate
+                  .getHours()
+                  .toString()
+                  .padStart(2, "0")}:${availableDate
+                  .getMinutes()
+                  .toString()
+                  .padStart(2, "0")}`
+              : "00:00",
+            inputDue: assignment.due ? dueDate.toISOString().split("T")[0] : "",
+            inputDueTime: assignment.due
+              ? `${dueDate.getHours().toString().padStart(2, "0")}:${dueDate
+                  .getMinutes()
+                  .toString()
+                  .padStart(2, "0")}`
+              : "23:59",
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching assignment:", error);
+      }
+    };
+    fetchAssignment();
+  }, [cid, aid]);
+
+  // Add change handlers
+  const handleChange = (e: any) => {
+    setFormValues({ ...formValues, [e.target.id]: e.target.value });
+  };
+
+  // Add save handlers
+  const handleSave = async () => {
+    if (!cid || !aid) return;
+
+    // Create date objects in local timezone
+    const availableDate = new Date(
+      `${formValues.inputAvailable}T${formValues.inputAvailableTime}`
+    );
+    const dueDate = new Date(
+      `${formValues.inputDue}T${formValues.inputDueTime}`
+    );
+
+    const updatedAssignment = {
+      _id: aid,
+      course: cid,
+      title: formValues.title,
+      description: formValues.description,
+      available: availableDate.toISOString(), // This converts to UTC
+      due: dueDate.toISOString(), // This converts to UTC
+    };
+
+    try {
+      await client.updateAssignment(cid, aid, updatedAssignment);
+    } catch (error) {
+      console.error("Error updating assignment:", error);
+    }
+  };
+
   return (
     <div id="wd-edit-assignment">
       <div className="mb-3">
-        <label htmlFor="input1" className="form-label">
+        <label htmlFor="title" className="form-label">
           Assignment Name
         </label>
         <input
-          type="email"
+          type="text"
           className="form-control"
-          id="text"
-          value={assignment?.title}
+          id="title"
+          value={formValues.title}
+          onChange={handleChange}
         />
       </div>
 
@@ -25,8 +110,10 @@ export default function AssignmentEditor() {
           The assignment is{" "}
           <span className="wd-fg-color-red"> available online </span> <br />
           <textarea
-            value={assignment?.description}
+            value={formValues.description}
             className="form-control"
+            id="description"
+            onChange={handleChange}
           ></textarea>
           <br />
           Submit a link to the landing page of your Web application running on
@@ -61,6 +148,7 @@ export default function AssignmentEditor() {
                 className="form-control"
                 id="inputPoints"
                 value="100"
+                readOnly
               />
             </td>
           </tr>
@@ -196,36 +284,36 @@ export default function AssignmentEditor() {
                     <input
                       type="date"
                       className="form-control"
-                      id="inputAssignDate"
-                      value={assignment?.due.split("T")[0]}
+                      id="inputDue"
+                      value={formValues.inputDue}
+                      onChange={handleChange}
                     />
                   </div>
 
                   {/* Available from and Until side by side */}
                   <div className="row mb-3">
                     <div className="col">
-                      <label
-                        htmlFor="inputAssignAvailable"
-                        className="form-label"
-                      >
+                      <label htmlFor="available" className="form-label">
                         <b>Available from</b>
                       </label>
                       <input
                         type="date"
                         className="form-control"
-                        id="inputAssignAvailable"
-                        value={assignment?.available.split("T")[0]}
+                        id="inputAvailable"
+                        value={formValues.inputAvailable}
+                        onChange={handleChange}
                       />
                     </div>
                     <div className="col">
-                      <label htmlFor="inputAssignUntil" className="form-label">
+                      <label htmlFor="due" className="form-label">
                         <b>Until</b>
                       </label>
                       <input
                         type="date"
                         className="form-control"
-                        id="inputAssignUntil"
-                        value={assignment?.due.split("T")[0]}
+                        id="inputDue"
+                        value={formValues.inputDue}
+                        onChange={handleChange}
                       />
                     </div>
                   </div>
@@ -245,6 +333,7 @@ export default function AssignmentEditor() {
         <Link
           to={`/Kambaz/Courses/${cid}/Assignments`}
           className="btn btn-danger"
+          onClick={handleSave}
         >
           Save
         </Link>
