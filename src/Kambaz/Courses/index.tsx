@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import CourseNavigation from "./Navigation";
-import { Route, Routes, useLocation, useParams, Navigate } from "react-router";
+import { Route, Routes, useLocation, useParams } from "react-router";
 import Modules from "./Modules";
 import Home from "./Home";
 import Assignments from "./Assignments";
@@ -17,20 +17,6 @@ export default function Courses() {
   const { pathname } = useLocation();
   const { courses } = useSelector((state: any) => state.courseReducer);
   const course = courses.find((course: { _id: string }) => course._id === cid);
-  const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const { enrollments } = useSelector((state: any) => state.enrollmentReducer);
-
-  const isEnrolled =
-    currentUser &&
-    currentUser.role === "STUDENT" &&
-    enrollments.some(
-      (enrollment: any) =>
-        enrollment.user === currentUser._id && enrollment.course === cid
-    );
-
-  if (currentUser?.role === "STUDENT" && !isEnrolled) {
-    return <Navigate to="/Kambaz/Dashboard" />;
-  }
 
   return (
     <div id="wd-courses">

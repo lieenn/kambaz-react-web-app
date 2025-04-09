@@ -1,63 +1,60 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ListGroup } from "react-bootstrap";
 import { GoTriangleDown } from "react-icons/go";
-import db from "../../Database";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 import { HiOutlineRocketLaunch } from "react-icons/hi2";
 import QuizControlButtons from "./QuizControlButtons";
 import QuizControls from "./QuizControls";
+import * as quizClient from "./client";
 
 export default function Quizzes() {
   const { cid } = useParams<{ cid: string }>();
   const [courseQuizzes, setQuizzes] = useState<any[]>([]);
-  console.log("quizzes", db.quizzes);
+
+  const fetchQuizzes = async () => {
+    if (!cid) return;
+    try {
+      const results = await quizClient.findQuizzesForCourse(cid);
+      setQuizzes(results);
+    } catch (error) {
+      console.error("Error fetching quizzes:", error);
+    }
+  };
 
   useEffect(() => {
-    console.log("quizzes", db.quizzes);
-    setQuizzes(db.quizzes.filter((quiz: any) => quiz.course === cid));
+    fetchQuizzes();
   }, [cid]);
 
-  const handleAddQuiz = () => {
-    // Generate a quiz ID with format "Q" + 3 digits
-    const generateId = () => {
-      const existingIds = db.quizzes.map((q) => {
-        if (q._id.startsWith("Q") && q._id.length === 4) {
-          const num = parseInt(q._id.substring(1), 10);
-          return isNaN(num) ? 0 : num;
-        }
-        return 0;
-      });
+  const handleAddQuiz = async () => {
+    if (!cid) return;
+    try {
+      const newQuiz = {
+        title: "New Quiz",
+        description: "Quiz description",
+        available: new Date().toISOString(),
+        due: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 1 week from now
+        points: 10,
+        published: false,
+      };
 
-      const highestId = Math.max(0, ...existingIds);
-      const nextId = highestId + 1;
-
-      return "Q" + nextId.toString().padStart(3, "0");
-    };
-
-    const newQuiz = {
-      _id: generateId(),
-      title: "New Quiz",
-      description: "Quiz description",
-      course: cid,
-      available: new Date().toISOString(),
-      due: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-      dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-      points: 10,
-      published: false,
-    };
-
-    setQuizzes([...courseQuizzes, newQuiz]);
+      await quizClient.createQuiz(cid, newQuiz);
+      fetchQuizzes(); // Refresh the quizzes list
+    } catch (error) {
+      console.error("Error creating quiz:", error);
+    }
   };
 
-  const handleDeleteQuiz = (id: string) => {
-    setQuizzes(courseQuizzes.filter((quiz) => quiz._id !== id));
+  const handleDeleteQuiz = async (id: string) => {
+    if (!cid) return;
+    try {
+      await quizClient.deleteQuiz(id);
+      fetchQuizzes(); // Refresh the quizzes list
+    } catch (error) {
+      console.error("Error deleting quiz:", error);
+    }
   };
-  // const handleUpdateQuiz = (id: string, updatedQuiz: any) => {
-  //   setQuizzes(
-  //     courseQuizzes.map((quiz) => (quiz._id === id ? updatedQuiz : quiz))
-  //   );
-  // };
+
   const handlePublishQuiz = (id: string) => {
     setQuizzes(
       courseQuizzes.map((quiz) =>
@@ -117,11 +114,11 @@ export default function Quizzes() {
                       hour12: true,
                     })}{" "}
                     | {quiz.points} pts |{" "}
-                    {
+                    {/* {
                       db.quizQuestions.filter(
                         (question: any) => question.quiz === quiz._id
                       ).length
-                    }
+                    } */}
                   </h6>
                 </div>
                 <div className="col-auto">

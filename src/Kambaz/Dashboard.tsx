@@ -153,6 +153,7 @@ export default function Dashboard({
                   <Link
                     to={`/Kambaz/Courses/${course._id}/Home`}
                     className="btn btn-primary"
+                    onClick={() => console.log("Course clicked", course._id)}
                   >
                     Go
                   </Link>

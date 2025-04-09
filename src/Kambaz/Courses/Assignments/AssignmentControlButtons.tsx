@@ -35,7 +35,12 @@ export default function AssignmentControlButtons({
   return (
     <div className="float-end">
       <FaTrash className="text-danger me-2 mb-1" onClick={handleDelete} />
-      <GreenCheckmark />
+      <GreenCheckmark
+        isPublished={true}
+        onClick={function (): void {
+          throw new Error("Function not implemented.");
+        }}
+      />
       <IoEllipsisVertical className="fs-4" />
 
       {/* Delete Confirmation Modal */}
