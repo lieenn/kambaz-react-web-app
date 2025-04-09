@@ -28,21 +28,41 @@ export default function ModulesControls({
       </Button>
       <Dropdown className="float-end me-2">
         <Dropdown.Toggle variant="secondary" size="lg">
-          <GreenCheckmark />
+          <GreenCheckmark
+            isPublished={true}
+            onClick={function (): void {
+              throw new Error("Function not implemented.");
+            }}
+          />
           Publish All
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
           <Dropdown.Item>
-            <GreenCheckmark />
+            <GreenCheckmark
+              isPublished={true}
+              onClick={function (): void {
+                throw new Error("Function not implemented.");
+              }}
+            />
             Publish All
           </Dropdown.Item>
           <Dropdown.Item>
-            <GreenCheckmark />
+            <GreenCheckmark
+              isPublished={true}
+              onClick={function (): void {
+                throw new Error("Function not implemented.");
+              }}
+            />
             Publish all modules
           </Dropdown.Item>
           <Dropdown.Item>
-            <GreenCheckmark />
+            <GreenCheckmark
+              isPublished={true}
+              onClick={function (): void {
+                throw new Error("Function not implemented.");
+              }}
+            />
             Publish modules only
           </Dropdown.Item>
         </Dropdown.Menu>

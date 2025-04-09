@@ -22,7 +22,12 @@ export default function ModuleControlButtons({
         className="text-danger me-2 mb-1"
         onClick={() => deleteModule(moduleId)}
       />
-      <GreenCheckmark />
+      <GreenCheckmark
+        isPublished={true}
+        onClick={function (): void {
+          throw new Error("Function not implemented.");
+        }}
+      />
       <BsPlus className="fs-1" />
       <IoEllipsisVertical className="fs-4" />
     </div>
