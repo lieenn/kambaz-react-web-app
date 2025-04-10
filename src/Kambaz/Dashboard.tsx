@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import * as enrollmentClient from "./Enrollments/client";
+import { useSelector } from "react-redux";
 
 export default function Dashboard({
   courses,
@@ -10,7 +11,6 @@ export default function Dashboard({
   addNewCourse,
   deleteCourse,
   updateCourse,
-  currentUser,
 }: {
   courses: any[];
   course: any;
@@ -18,10 +18,10 @@ export default function Dashboard({
   addNewCourse: () => void;
   deleteCourse: (course: any) => void;
   updateCourse: () => void;
-  currentUser: any;
 }) {
   const [enrollments, setEnrollments] = useState<any[]>([]);
   const [showAllCourses, setShowAllCourses] = useState(false);
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
 
   const getEnrollments = async () => {
     const allEnrollments = await enrollmentClient.findAllEnrollments();

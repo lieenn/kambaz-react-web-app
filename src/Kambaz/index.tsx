@@ -88,7 +88,6 @@ export default function Kambaz() {
                             addNewCourse={addNewCourse}
                             deleteCourse={deleteCourse}
                             updateCourse={updateCourse}
-                            currentUser={currentUser}
                           />
                         </ProtectedRoute>
                       }
