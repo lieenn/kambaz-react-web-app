@@ -11,12 +11,14 @@ import Piazza from "./Piazza";
 import Zoom from "./Zoom";
 import Quizzes from "./Quizzes";
 import { useSelector } from "react-redux";
+import QuizEditor from "./Quizzes/Editor";
 
 export default function Courses() {
   const { cid } = useParams();
   const { pathname } = useLocation();
   const { courses } = useSelector((state: any) => state.courseReducer);
   const course = courses.find((course: { _id: string }) => course._id === cid);
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
 
   return (
     <div id="wd-courses">
@@ -38,7 +40,11 @@ export default function Courses() {
             <Route path="Assignments" element={<Assignments />} />
             <Route path="Assignments/:aid" element={<AssignmentEditor />} />
             <Route path="Quizzes" element={<Quizzes />} />
-            <Route path="People" element={<PeopleTable />} />
+            <Route path="Quizzes/:qid" element={<QuizEditor />} />
+            <Route
+              path="People"
+              element={<PeopleTable currentUser={currentUser} />}
+            />
           </Routes>
         </div>
       </div>

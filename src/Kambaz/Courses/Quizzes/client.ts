@@ -37,3 +37,23 @@ export const deleteQuiz = async (quizId: string) => {
     throw error;
   }
 };
+
+export const updateQuiz = async (quizId: string, quiz: any) => {
+  try {
+    const response = await axios.put(`${QUIZZES_API}/${quizId}`, quiz);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating quiz:", error);
+    throw error;
+  }
+};
+
+export const getQuestionsForQuiz = async (quizId: string) => {
+  try {
+    const response = await axios.get(`${QUIZZES_API}/${quizId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching questions for quiz:", error);
+    throw error;
+  }
+};
