@@ -12,13 +12,28 @@ import Zoom from "./Zoom";
 import Quizzes from "./Quizzes";
 import { useSelector } from "react-redux";
 import QuizEditor from "./Quizzes/Editor";
+import * as courseClient from "./client";
+import { useEffect, useState } from "react";
 
 export default function Courses() {
   const { cid } = useParams();
   const { pathname } = useLocation();
   const { courses } = useSelector((state: any) => state.courseReducer);
   const course = courses.find((course: { _id: string }) => course._id === cid);
-  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  // Add state to store the users
+  const [users, setUsers] = useState([]);
+
+  // Use useEffect to fetch users when cid changes
+  useEffect(() => {
+    const fetchUsers = async () => {
+      if (cid) {
+        const fetchedUsers = await courseClient.findUsersForCourse(cid);
+        setUsers(fetchedUsers);
+      }
+    };
+
+    fetchUsers();
+  }, [cid]);
 
   return (
     <div id="wd-courses">
@@ -41,10 +56,7 @@ export default function Courses() {
             <Route path="Assignments/:aid" element={<AssignmentEditor />} />
             <Route path="Quizzes" element={<Quizzes />} />
             <Route path="Quizzes/:qid" element={<QuizEditor />} />
-            <Route
-              path="People"
-              element={<PeopleTable currentUser={currentUser} />}
-            />
+            <Route path="People" element={<PeopleTable users={users} />} />
           </Routes>
         </div>
       </div>
